@@ -97,11 +97,14 @@ export function CountdownTimer({ initialCountdownDate }: CountdownTimerProps) {
   })
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <p className="text-white/90 text-lg sm:text-xl font-medium tracking-wide">Baby Arriving On</p>
-      <p className="text-white text-2xl sm:text-3xl font-bold">{formattedDueDate}</p>
+    <div className="flex flex-col items-center gap-2">
+      <div className="text-center mb-4">
+        <p className="text-white/90 text-lg sm:text-xl font-medium tracking-wide">Baby is due</p>
+        <p className="text-white text-2xl sm:text-3xl font-bold my-1">{formattedDueDate}</p>
+        <p className="text-white/90 text-lg sm:text-xl font-medium tracking-wide">or arriving in...</p>
+      </div>
 
-      <div className="bg-blue-600 rounded-2xl p-4 sm:p-6 shadow-xl mt-2">
+      <div className="bg-blue-600 rounded-2xl p-4 sm:p-6 shadow-xl">
         <div className="flex gap-2 sm:gap-4">
           <TimeBlock value={formatNumber(timeLeft.days)} label="DAYS" />
           <TimeBlock value={formatNumber(timeLeft.hours)} label="HOURS" />
@@ -109,8 +112,6 @@ export function CountdownTimer({ initialCountdownDate }: CountdownTimerProps) {
           <TimeBlock value={formatNumber(timeLeft.seconds)} label="SECONDS" />
         </div>
       </div>
-
-      <p className="text-white/70 text-sm mt-2">until we meet our little one</p>
     </div>
   )
 }

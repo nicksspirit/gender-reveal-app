@@ -40,11 +40,11 @@ export default async function Home() {
         {/* Couple names */}
         <div className="mt-10 sm:mt-14 text-center">
           <h2 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold">Uzoma & Maame</h2>
-          <p className="text-white/70 text-base sm:text-lg mt-2">Our First Child</p>
         </div>
 
         {/* Scroll indicator */}
-        <div className="mt-10 sm:mt-14">
+        <div className="mt-10 sm:mt-14 flex flex-col items-center gap-4">
+          <p className="text-white/60 text-lg sm:text-xl font-medium">Scroll down to learn more</p>
           <ScrollIndicator />
         </div>
       </section>
