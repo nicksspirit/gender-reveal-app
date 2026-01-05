@@ -26,9 +26,9 @@ export function OurStorySection() {
           <div className="flex-1 text-center md:text-left">
             <h3 className="text-white text-2xl sm:text-3xl font-bold mb-4">Two Hearts, One Love</h3>
             <p className="text-white/80 text-base sm:text-lg leading-relaxed">
-              From the moment we met, we knew we were meant to build a life together. Through every laugh, every
-              adventure, and every quiet moment, our love has only grown stronger. Now, we&apos;re ready for our
-              greatest adventure yet.
+              A few months after getting to know each other, we knew we were meant to build a life together. Through
+              every laugh, every adventure, and every quiet moment, our love has only grown stronger. Now, we&apos;re
+              ready for our greatest adventure yet.
             </p>
           </div>
         </div>
