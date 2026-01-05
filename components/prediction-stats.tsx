@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { getPredictionStats } from "@/app/actions"
 import { createClient } from "@/lib/supabase/client"
 
 interface PredictionStatsProps {
@@ -9,37 +10,56 @@ interface PredictionStatsProps {
 }
 
 export function PredictionStats({ userPrediction, actualGender }: PredictionStatsProps) {
-  const [stats, setStats] = useState<{ boy: number; girl: number } | null>(null)
+  const [stats, setStats] = useState<{ boy: number; girl: number; total: number } | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
+    const supabase = createClient()
+
     async function fetchStats() {
-      const supabase = createClient()
+      const result = await getPredictionStats()
 
-      // Get all predictions to count
-      // In a larger app, we would use a stored procedure or an edge function for this aggregation
-      // but for this scale, client-side counting or a simple select count is fine.
-      const { data, error } = await supabase
-        .from("predictions")
-        .select("prediction")
+      if (!isMounted) return
 
-      if (error) {
-        console.error("Error fetching stats:", error)
+      if (!result.success || !result.data) {
         setLoading(false)
         return
       }
 
-      const boyCount = data.filter((p) => p.prediction === "boy").length
-      const girlCount = data.filter((p) => p.prediction === "girl").length
-
-      setStats({ boy: boyCount, girl: girlCount })
+      setStats(result.data)
       setLoading(false)
     }
 
     fetchStats()
+
+    const channel = supabase
+      .channel("predictions-changes")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "predictions" },
+        (payload) => {
+          const newPrediction = payload.new?.prediction as "boy" | "girl" | undefined
+          if (!newPrediction) return
+          setStats((prev) => {
+            if (!prev) return prev
+            return {
+              ...prev,
+              [newPrediction]: prev[newPrediction] + 1,
+              total: prev.total + 1,
+            }
+          })
+        }
+      )
+      .subscribe()
+
+    return () => {
+      isMounted = false
+      supabase.removeChannel(channel)
+    }
   }, [])
 
-  if (loading || !stats) {
+  if (loading) {
     return (
       <div className="mt-8 animate-pulse space-y-4">
         <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
@@ -48,7 +68,15 @@ export function PredictionStats({ userPrediction, actualGender }: PredictionStat
     )
   }
 
-  const total = stats.boy + stats.girl
+  if (!stats) {
+    return (
+      <div className="mt-8 text-center text-sm text-slate-600">
+        Unable to load prediction stats right now.
+      </div>
+    )
+  }
+
+  const total = stats.total
   const boyPercentage = total > 0 ? Math.round((stats.boy / total) * 100) : 0
   const girlPercentage = total > 0 ? Math.round((stats.girl / total) * 100) : 0
 

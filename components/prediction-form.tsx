@@ -6,9 +6,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { createClient } from "@/lib/supabase/client"
-import { PredictionStats } from "@/components/prediction-stats"
-import { RegistrySection } from "@/components/registry-section"
+import { submitPrediction } from "@/app/actions"
+import { FindPredictionModal } from "@/components/find-prediction-modal"
 
 interface ValidationErrors {
   name?: string
@@ -16,23 +15,24 @@ interface ValidationErrors {
   prediction?: string
 }
 
-interface Registry {
+interface PredictionRecord {
   id: string
   name: string
-  url: string
+  email: string
+  prediction: "boy" | "girl"
+  created_at: string
 }
 
 interface PredictionFormProps {
-  onPredictionSuccess?: (prediction: "boy" | "girl") => void
-  registries?: Registry[]
+  onPredictionSuccess?: (prediction: PredictionRecord) => void
+  onPredictionFound?: (prediction: PredictionRecord) => void
 }
 
-export function PredictionForm({ onPredictionSuccess, registries }: PredictionFormProps) {
+export function PredictionForm({ onPredictionSuccess, onPredictionFound }: PredictionFormProps) {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [prediction, setPrediction] = useState<"boy" | "girl" | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({})
   const [touched, setTouched] = useState<{ name: boolean; email: boolean }>({
@@ -108,51 +108,30 @@ export function PredictionForm({ onPredictionSuccess, registries }: PredictionFo
     setError(null)
 
     try {
-      const supabase = createClient()
-      const { error: insertError } = await supabase.from("predictions").insert({
-        name: name.trim(),
-        email: email.trim(),
-        prediction,
-      })
+      const result = await submitPrediction(name, email, prediction)
 
-      if (insertError) throw insertError
+      if (!result.success) {
+        if (result.error === "EMAIL_EXISTS") {
+          setError("You've already made a prediction! Use 'Find My Prediction' to see it.")
+        } else {
+          setError("Failed to submit prediction. Please try again.")
+        }
+        setIsSubmitting(false)
+        return
+      }
 
-      setIsSubmitted(true)
-      if (onPredictionSuccess && prediction) {
-        onPredictionSuccess(prediction)
+      if (onPredictionSuccess && result.data) {
+        onPredictionSuccess(result.data)
       }
     } catch (err) {
-      setError("Failed to submit prediction. Please try again.")
       console.error(err)
+      setError("Something went wrong. Please try again.")
     } finally {
       setIsSubmitting(false)
     }
   }
 
   const isFormValid = name.trim().length >= 2 && validateEmail(email.trim()) && prediction !== null
-
-  if (isSubmitted) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-4xl mb-4">{prediction === "boy" ? "💙" : "💖"}</div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank you, {name}!</h3>
-        <p className="text-slate-900 text-lg md:text-xl font-semibold mx-auto max-w-xl leading-relaxed bg-white/70 px-4 py-2 rounded-xl shadow-sm">
-          Your prediction for <span className="font-extrabold text-slate-900">{prediction === "boy" ? "BOY" : "GIRL"}</span> has been
-          recorded.
-        </p>
-
-        {prediction && (
-          <div className="mt-8">
-            <PredictionStats userPrediction={prediction} />
-          </div>
-        )}
-
-        {registries && registries.length > 0 && (
-          <RegistrySection registries={registries} />
-        )}
-      </div>
-    )
-  }
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto space-y-6">
@@ -250,6 +229,12 @@ export function PredictionForm({ onPredictionSuccess, registries }: PredictionFo
       >
         {isSubmitting ? "Submitting..." : "Submit Prediction"}
       </Button>
+
+      {onPredictionFound && (
+        <div className="text-center">
+          <FindPredictionModal onFound={onPredictionFound} />
+        </div>
+      )}
     </form>
   )
 }

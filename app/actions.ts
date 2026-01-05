@@ -1,6 +1,7 @@
 "use server"
 
 import { createAdminClient } from "@/lib/supabase/admin"
+import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 
 export async function updateRevealSettings(
@@ -107,4 +108,71 @@ export async function deleteRegistry(id: string) {
   revalidatePath("/")
 
   return { success: true, message: "Registry deleted successfully." }
+}
+
+export async function getPredictionByEmail(email: string) {
+  const supabase = await createClient()
+  const normalizedEmail = email.trim().toLowerCase()
+
+  const { data, error } = await supabase
+    .from("predictions")
+    .select("id, name, email, prediction, created_at")
+    .eq("email", normalizedEmail)
+    .maybeSingle()
+
+  if (error) {
+    console.error("Error fetching prediction by email:", error)
+    return { success: false, data: null }
+  }
+
+  return { success: true, data }
+}
+
+export async function submitPrediction(
+  name: string,
+  email: string,
+  prediction: "boy" | "girl"
+) {
+  const supabase = await createClient()
+  const normalizedEmail = email.trim().toLowerCase()
+  const normalizedName = name.trim()
+
+  const { data, error } = await supabase
+    .from("predictions")
+    .insert({
+      name: normalizedName,
+      email: normalizedEmail,
+      prediction,
+    })
+    .select("id, name, email, prediction, created_at")
+    .single()
+
+  if (error) {
+    if (error.code === "23505") {
+      return { success: false, error: "EMAIL_EXISTS" as const }
+    }
+    console.error("Error submitting prediction:", error)
+    return { success: false, error: "UNKNOWN" as const }
+  }
+
+  return { success: true, data }
+}
+
+export async function getPredictionStats() {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("predictions")
+    .select("prediction")
+
+  if (error) {
+    console.error("Error fetching prediction stats:", error)
+    return { success: false, data: null }
+  }
+
+  const boy = data.filter((row) => row.prediction === "boy").length
+  const girl = data.filter((row) => row.prediction === "girl").length
+  const total = boy + girl
+
+  return { success: true, data: { boy, girl, total } }
 }
