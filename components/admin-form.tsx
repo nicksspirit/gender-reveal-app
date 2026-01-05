@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { createClient } from "@/lib/supabase/client"
+import { updateRevealSettings } from "@/app/actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -29,39 +29,23 @@ export function AdminForm({ initialDueDate, initialGender, initialIsRevealed }: 
     setIsSaving(true)
     setMessage(null)
 
-    const supabase = createClient()
+    console.log("Saving admin settings:", { dueDate, gender, isRevealed })
 
-    console.log("[v0] Saving admin settings:", { dueDate, gender, isRevealed })
+    try {
+      const result = await updateRevealSettings(dueDate, gender, isRevealed)
 
-    const { data: existingData, error: fetchError } = await supabase.from("reveal_state").select("id").single()
-
-    if (fetchError) {
-      console.error("[v0] Error fetching reveal state ID:", fetchError)
-      setMessage({ type: "error", text: "Failed to fetch current settings. Please try again." })
+      if (result.success) {
+        console.log("Successfully saved changes")
+        setMessage({ type: "success", text: result.message })
+      } else {
+        console.error("Error saving changes:", result.message)
+        setMessage({ type: "error", text: result.message })
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error)
+      setMessage({ type: "error", text: "An unexpected error occurred. Please try again." })
+    } finally {
       setIsSaving(false)
-      return
-    }
-
-    console.log("[v0] Found reveal_state ID:", existingData.id)
-
-    const { error: updateError } = await supabase
-      .from("reveal_state")
-      .update({
-        countdown_date: new Date(dueDate).toISOString(),
-        gender,
-        is_revealed: isRevealed,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", existingData.id)
-
-    setIsSaving(false)
-
-    if (updateError) {
-      console.error("[v0] Error updating reveal state:", updateError)
-      setMessage({ type: "error", text: "Failed to save changes. Please try again." })
-    } else {
-      console.log("[v0] Successfully saved changes")
-      setMessage({ type: "success", text: "Settings saved successfully!" })
     }
   }
 

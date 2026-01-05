@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { createClient } from "@/lib/supabase/client"
+import { RegistrySection } from "@/components/registry-section"
 
 interface ValidationErrors {
   name?: string
@@ -14,7 +15,18 @@ interface ValidationErrors {
   prediction?: string
 }
 
-export function PredictionForm() {
+interface Registry {
+  id: string
+  name: string
+  url: string
+}
+
+interface PredictionFormProps {
+  onPredictionSuccess?: (prediction: "boy" | "girl") => void
+  registries?: Registry[]
+}
+
+export function PredictionForm({ onPredictionSuccess, registries }: PredictionFormProps) {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [prediction, setPrediction] = useState<"boy" | "girl" | null>(null)
@@ -105,6 +117,9 @@ export function PredictionForm() {
       if (insertError) throw insertError
 
       setIsSubmitted(true)
+      if (onPredictionSuccess && prediction) {
+        onPredictionSuccess(prediction)
+      }
     } catch (err) {
       setError("Failed to submit prediction. Please try again.")
       console.error(err)
@@ -124,6 +139,10 @@ export function PredictionForm() {
           Your prediction for <span className="font-semibold">{prediction === "boy" ? "BOY" : "GIRL"}</span> has been
           recorded.
         </p>
+
+        {registries && registries.length > 0 && (
+          <RegistrySection registries={registries} />
+        )}
       </div>
     )
   }

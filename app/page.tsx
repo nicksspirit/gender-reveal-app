@@ -3,7 +3,7 @@ import { AnkaraBackground } from "@/components/ankara-background"
 import { BoyOrGirlTitle } from "@/components/boy-or-girl-title"
 import { CountdownTimer } from "@/components/countdown-timer"
 import { ScrollIndicator } from "@/components/scroll-indicator"
-import { PredictionForm } from "@/components/prediction-form"
+import { RevealSection } from "@/components/reveal-section"
 import { OurStorySection } from "@/components/our-story-section"
 
 export default async function Home() {
@@ -13,6 +13,14 @@ export default async function Home() {
   const { data: revealState } = await supabase.from("reveal_state").select("*").single()
 
   const countdownDate = revealState?.countdown_date || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+  const isRevealed = revealState?.is_revealed || false
+  const gender = revealState?.gender as "boy" | "girl" | null
+
+  // Fetch registries
+  const { data: registries } = await supabase
+    .from("registries")
+    .select("*")
+    .order("created_at", { ascending: true })
 
   return (
     <main className="relative">
@@ -44,21 +52,10 @@ export default async function Home() {
       {/* Our Story section */}
       <OurStorySection />
 
-      {/* Prediction form section */}
+      {/* Reveal or Prediction section */}
       <section className="relative min-h-dvh flex flex-col items-center justify-center px-4 py-24 sm:py-32">
         <div className="relative w-full max-w-2xl">
-          {/* Background card - lower z-index */}
-          <div className="absolute inset-0 bg-white/20 backdrop-blur-md rounded-3xl shadow-xl border border-white/30"></div>
-
-          {/* Form content - higher z-index */}
-          <div className="relative z-10 rounded-3xl p-10 sm:p-16 md:p-20">
-            <div className="text-center mb-12 sm:mb-16">
-              <h2 className="text-gray-900 text-3xl sm:text-4xl md:text-5xl font-bold mb-4">Make Your Prediction</h2>
-              <p className="text-gray-700 text-base sm:text-lg">Will it be a boy or a girl? Cast your vote!</p>
-            </div>
-
-            <PredictionForm />
-          </div>
+          <RevealSection isRevealed={isRevealed} gender={gender} registries={registries || []} />
         </div>
       </section>
     </main>
