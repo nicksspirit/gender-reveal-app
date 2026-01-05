@@ -108,6 +108,12 @@ export function PredictionForm({ onPredictionSuccess, onPredictionFound }: Predi
     setError(null)
 
     try {
+      if (!prediction) {
+        setError("Please select a prediction")
+        setIsSubmitting(false)
+        return
+      }
+
       const result = await submitPrediction(name, email, prediction)
 
       if (!result.success) {
