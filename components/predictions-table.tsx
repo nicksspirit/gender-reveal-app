@@ -65,7 +65,7 @@ export function PredictionsTable({ initialPredictions }: PredictionsTableProps) 
           <TableBody>
             {predictions.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center h-32 text-slate-500">
+                <TableCell colSpan={5} className="text-center h-32 text-slate-600">
                   No predictions yet.
                 </TableCell>
               </TableRow>
@@ -73,7 +73,7 @@ export function PredictionsTable({ initialPredictions }: PredictionsTableProps) 
               predictions.map((prediction) => (
                 <TableRow key={prediction.id} className="hover:bg-slate-50/50">
                   <TableCell className="font-medium text-slate-900">{prediction.name}</TableCell>
-                  <TableCell className="text-slate-600">{prediction.email}</TableCell>
+                  <TableCell className="text-slate-700">{prediction.email}</TableCell>
                   <TableCell>
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${
                       prediction.prediction === 'boy' 
@@ -83,7 +83,7 @@ export function PredictionsTable({ initialPredictions }: PredictionsTableProps) 
                       {prediction.prediction === 'boy' ? 'Boy 💙' : 'Girl 💗'}
                     </span>
                   </TableCell>
-                  <TableCell className="text-slate-500 text-sm">
+                  <TableCell className="text-slate-600 text-sm">
                     {format(new Date(prediction.created_at), 'MMM d, yyyy h:mm a')}
                   </TableCell>
                   <TableCell className="text-right">
@@ -108,7 +108,7 @@ export function PredictionsTable({ initialPredictions }: PredictionsTableProps) 
           </TableBody>
         </Table>
       </div>
-      <div className="bg-slate-50 border-t p-3 text-xs text-slate-500 text-center">
+      <div className="bg-slate-50 border-t p-3 text-xs text-slate-600 text-center">
         Showing {predictions.length} prediction{predictions.length !== 1 ? 's' : ''}
       </div>
     </div>

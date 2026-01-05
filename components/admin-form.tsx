@@ -56,7 +56,7 @@ export function AdminForm({ initialDueDate, initialGender, initialIsRevealed }: 
         <Label htmlFor="dueDate" className="text-lg font-semibold text-slate-900">
           Baby Due Date
         </Label>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-600">
           This date will be displayed in the countdown timer on the landing page.
         </p>
         <Input
@@ -71,7 +71,7 @@ export function AdminForm({ initialDueDate, initialGender, initialIsRevealed }: 
       {/* Gender Section */}
       <div className="space-y-3">
         <Label className="text-lg font-semibold text-slate-900">Baby Gender</Label>
-        <p className="text-sm text-slate-500">Select the gender to reveal when the countdown ends.</p>
+        <p className="text-sm text-slate-600">Select the gender to reveal when the countdown ends.</p>
         <div className="flex gap-4">
           <button
             type="button"
@@ -79,7 +79,7 @@ export function AdminForm({ initialDueDate, initialGender, initialIsRevealed }: 
             className={`px-6 py-3 rounded-xl font-bold text-lg transition-all cursor-pointer ${
               gender === "boy"
                 ? "bg-blue-600 text-white shadow-lg scale-105"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
           >
             Boy
@@ -90,7 +90,7 @@ export function AdminForm({ initialDueDate, initialGender, initialIsRevealed }: 
             className={`px-6 py-3 rounded-xl font-bold text-lg transition-all cursor-pointer ${
               gender === "girl"
                 ? "bg-pink-600 text-white shadow-lg scale-105"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
           >
             Girl
@@ -101,7 +101,7 @@ export function AdminForm({ initialDueDate, initialGender, initialIsRevealed }: 
       {/* Reveal Toggle Section */}
       <div className="space-y-3">
         <Label className="text-lg font-semibold text-slate-900">Reveal Status</Label>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-600">
           Toggle this on when you&apos;re ready to reveal the gender to everyone.
         </p>
         <button
@@ -115,7 +115,7 @@ export function AdminForm({ initialDueDate, initialGender, initialIsRevealed }: 
             }`}
           />
         </button>
-        <p className={`text-sm font-medium ${isRevealed ? "text-green-600" : "text-slate-500"}`}>
+        <p className={`text-sm font-medium ${isRevealed ? "text-green-600" : "text-slate-600"}`}>
           {isRevealed ? "Gender is revealed!" : "Gender is hidden"}
         </p>
       </div>

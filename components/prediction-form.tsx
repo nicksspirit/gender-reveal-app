@@ -160,7 +160,7 @@ export function PredictionForm({ onPredictionSuccess, registries }: PredictionFo
           value={name}
           onChange={(e) => handleNameChange(e.target.value)}
           onBlur={() => handleBlur("name")}
-          className={`bg-white/50 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-gray-500 ${
+          className={`bg-white/60 border-gray-300 text-gray-900 placeholder:text-gray-600 focus:border-gray-500 ${
             validationErrors.name && touched.name ? "border-red-500 focus:border-red-500" : ""
           }`}
           aria-invalid={!!validationErrors.name && touched.name}
@@ -184,7 +184,7 @@ export function PredictionForm({ onPredictionSuccess, registries }: PredictionFo
           value={email}
           onChange={(e) => handleEmailChange(e.target.value)}
           onBlur={() => handleBlur("email")}
-          className={`bg-white/50 border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-gray-500 ${
+          className={`bg-white/60 border-gray-300 text-gray-900 placeholder:text-gray-600 focus:border-gray-500 ${
             validationErrors.email && touched.email ? "border-red-500 focus:border-red-500" : ""
           }`}
           aria-invalid={!!validationErrors.email && touched.email}

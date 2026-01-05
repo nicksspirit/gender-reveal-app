@@ -107,7 +107,7 @@ export function RegistryManager({ initialRegistries }: RegistryManagerProps) {
       <div className="space-y-2">
         <h3 className="font-semibold text-slate-900">Active Registries</h3>
         {initialRegistries.length === 0 ? (
-          <p className="text-sm text-slate-500 italic">No registries added yet.</p>
+          <p className="text-sm text-slate-600 italic">No registries added yet.</p>
         ) : (
           <div className="space-y-2">
             {initialRegistries.map(reg => (

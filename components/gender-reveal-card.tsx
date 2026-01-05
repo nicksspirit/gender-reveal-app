@@ -30,7 +30,7 @@ export function GenderRevealCard({ gender, userPrediction, registries }: GenderR
     return (
       <div className="text-center p-10">
         <h2 className="text-3xl font-bold text-white">The secret is out...</h2>
-        <p className="text-white/80 mt-4">But we can&apos;t quite see it yet!</p>
+        <p className="text-white/90 mt-4">But we can&apos;t quite see it yet!</p>
       </div>
     )
   }
@@ -76,7 +76,7 @@ export function GenderRevealCard({ gender, userPrediction, registries }: GenderR
         
         <div className="relative z-10">
           <div className="mb-6">
-            <span className="text-slate-600 font-medium uppercase tracking-widest text-sm sm:text-base bg-white/50 px-4 py-1 rounded-full">
+            <span className="text-slate-700 font-medium uppercase tracking-widest text-sm sm:text-base bg-white/60 px-4 py-1 rounded-full">
               It&apos;s official
             </span>
           </div>
@@ -99,7 +99,7 @@ export function GenderRevealCard({ gender, userPrediction, registries }: GenderR
                 ? "We can't wait to meet our little prince!" 
                 : "We can't wait to meet our little princess!"}
             </p>
-            <p className="text-slate-600 font-medium">
+            <p className="text-slate-700 font-medium">
               March 24, 2026
             </p>
           </div>

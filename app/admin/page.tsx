@@ -49,7 +49,7 @@ export default async function AdminPage() {
       <div className="max-w-5xl mx-auto space-y-8">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">Admin Portal</h1>
-          <p className="text-slate-600 mb-8">Manage your gender reveal settings</p>
+          <p className="text-slate-700 mb-8">Manage your gender reveal settings</p>
 
           <AdminForm
             initialDueDate={revealState?.countdown_date || new Date().toISOString()}

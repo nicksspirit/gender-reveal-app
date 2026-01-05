@@ -14,7 +14,7 @@ export function ScrollIndicator() {
   return (
     <motion.button
       onClick={scrollToContent}
-      className="flex flex-col items-center gap-1 text-white/80 hover:text-white transition-colors cursor-pointer"
+      className="flex flex-col items-center gap-1 text-white/90 hover:text-white transition-colors cursor-pointer"
       animate={{ y: [0, 8, 0] }}
       transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
       aria-label="Scroll to content"

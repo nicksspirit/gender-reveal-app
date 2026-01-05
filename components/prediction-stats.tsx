@@ -78,7 +78,7 @@ export function PredictionStats({ userPrediction, actualGender }: PredictionStat
               </p>
             )}
 
-            <p className="text-sm text-gray-500 mt-2 font-medium">
+            <p className="text-sm text-gray-600 mt-2 font-medium">
               {isFirstVoter
                 ? "You're the very first person to share your guess! 🌟"
                 : `You joined ${userPercentage}% of voters who ${isCorrect ? 'also guessed correctly' : 'made the same prediction'}.`}
@@ -94,7 +94,7 @@ export function PredictionStats({ userPrediction, actualGender }: PredictionStat
         <p className="text-slate-800 text-lg">
           Oh interesting! We&apos;re curious to know why you thought it was a <span className="font-bold uppercase">{userPrediction}</span>! 🧐
         </p>
-        <p className="text-gray-600 mt-3 pt-2 border-t border-gray-100">
+        <p className="text-gray-700 mt-3 pt-2 border-t border-gray-100">
           You&apos;re in the <span className="font-bold text-xl">{userPercentage}%</span>
           {isMajority && majorityPrediction !== "tie" ? (
               " majority! Great minds think alike? 🧠"

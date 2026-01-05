@@ -44,7 +44,7 @@ export default async function Home() {
 
         {/* Scroll indicator */}
         <div className="mt-10 sm:mt-14 flex flex-col items-center gap-4">
-          <p className="text-white/60 text-lg sm:text-xl font-medium">Scroll down to learn more</p>
+          <p className="text-white/90 text-lg sm:text-xl font-medium">Scroll down to learn more</p>
           <ScrollIndicator />
         </div>
       </section>
