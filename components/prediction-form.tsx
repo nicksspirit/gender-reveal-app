@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { createClient } from "@/lib/supabase/client"
+import { PredictionStats } from "@/components/prediction-stats"
 import { RegistrySection } from "@/components/registry-section"
 
 interface ValidationErrors {
@@ -135,10 +136,16 @@ export function PredictionForm({ onPredictionSuccess, registries }: PredictionFo
       <div className="text-center py-8">
         <div className="text-4xl mb-4">{prediction === "boy" ? "💙" : "💖"}</div>
         <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank you, {name}!</h3>
-        <p className="text-gray-700">
-          Your prediction for <span className="font-semibold">{prediction === "boy" ? "BOY" : "GIRL"}</span> has been
+        <p className="text-slate-900 text-lg md:text-xl font-semibold mx-auto max-w-xl leading-relaxed bg-white/70 px-4 py-2 rounded-xl shadow-sm">
+          Your prediction for <span className="font-extrabold text-slate-900">{prediction === "boy" ? "BOY" : "GIRL"}</span> has been
           recorded.
         </p>
+
+        {prediction && (
+          <div className="mt-8">
+            <PredictionStats userPrediction={prediction} />
+          </div>
+        )}
 
         {registries && registries.length > 0 && (
           <RegistrySection registries={registries} />
