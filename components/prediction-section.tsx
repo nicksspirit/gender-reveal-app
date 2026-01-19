@@ -1,12 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { getPredictionByEmail } from "@/app/actions"
+import { usePrediction } from "@/components/prediction-context"
 import { PredictionForm } from "@/components/prediction-form"
 import { UserPredictionCard } from "@/components/user-prediction-card"
 import { Skeleton } from "@/components/ui/skeleton"
-
-const STORAGE_KEY = "gender_reveal_user_email"
 
 interface Registry {
   id: string
@@ -28,48 +25,9 @@ interface PredictionSectionProps {
 }
 
 export function PredictionSection({ registries, onPredictionSaved }: PredictionSectionProps) {
-  const [isLoading, setIsLoading] = useState(true)
-  const [userPrediction, setUserPrediction] = useState<PredictionRecord | null>(null)
-
-  useEffect(() => {
-    let isMounted = true
-
-    async function checkReturningUser() {
-      try {
-        const savedEmail = localStorage.getItem(STORAGE_KEY)
-        if (savedEmail) {
-          const result = await getPredictionByEmail(savedEmail)
-          if (!isMounted) return
-
-          if (result.success && result.data) {
-            setUserPrediction(result.data)
-            return
-          }
-
-          localStorage.removeItem(STORAGE_KEY)
-        }
-      } catch (error) {
-        console.error(error)
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
-    }
-
-    checkReturningUser()
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
+  const { userPrediction, isLoading, setUserPrediction } = usePrediction()
 
   const handlePredictionSaved = (prediction: PredictionRecord) => {
-    try {
-      localStorage.setItem(STORAGE_KEY, prediction.email.toLowerCase())
-    } catch (error) {
-      console.error(error)
-    }
     setUserPrediction(prediction)
     onPredictionSaved?.(prediction)
   }

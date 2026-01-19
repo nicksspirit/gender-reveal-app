@@ -1,11 +1,8 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { getPredictionByEmail } from "@/app/actions"
+import { usePrediction } from "@/components/prediction-context"
 import { GenderRevealCard } from "@/components/gender-reveal-card"
 import { PredictionSection } from "@/components/prediction-section"
-
-const STORAGE_KEY = "gender_reveal_user_email"
 
 interface Registry {
   id: string
@@ -20,47 +17,10 @@ interface RevealSectionProps {
 }
 
 export function RevealSection({ isRevealed, gender, registries }: RevealSectionProps) {
-  const [isCheckingPrediction, setIsCheckingPrediction] = useState(true)
-  const [userPrediction, setUserPrediction] = useState<"boy" | "girl" | undefined>(undefined)
+  const { userPrediction, isLoading } = usePrediction()
 
-  useEffect(() => {
-    if (!isRevealed) return
-    let isMounted = true
-
-    async function loadPrediction() {
-      try {
-        const savedEmail = localStorage.getItem(STORAGE_KEY)
-        if (!savedEmail) {
-          setIsCheckingPrediction(false)
-          return
-        }
-
-        const result = await getPredictionByEmail(savedEmail)
-        if (!isMounted) return
-
-        if (result.success && result.data) {
-          setUserPrediction(result.data.prediction)
-        } else {
-          localStorage.removeItem(STORAGE_KEY)
-        }
-      } catch (error) {
-        console.error(error)
-      } finally {
-        if (isMounted) {
-          setIsCheckingPrediction(false)
-        }
-      }
-    }
-
-    loadPrediction()
-
-    return () => {
-      isMounted = false
-    }
-  }, [isRevealed])
-
-  if (isRevealed && !isCheckingPrediction && userPrediction) {
-    return <GenderRevealCard gender={gender} userPrediction={userPrediction} registries={registries} />
+  if (isRevealed && !isLoading && userPrediction) {
+    return <GenderRevealCard gender={gender} userPrediction={userPrediction.prediction} registries={registries} />
   }
 
   return (
@@ -75,13 +35,7 @@ export function RevealSection({ isRevealed, gender, registries }: RevealSectionP
           <p className="text-gray-700 text-base sm:text-lg">Will it be a boy or a girl? Cast your vote!</p>
         </div>
 
-        <PredictionSection
-          registries={registries}
-          onPredictionSaved={(prediction) => {
-            setUserPrediction(prediction.prediction)
-            setIsCheckingPrediction(false)
-          }}
-        />
+        <PredictionSection registries={registries} />
       </div>
     </>
   )

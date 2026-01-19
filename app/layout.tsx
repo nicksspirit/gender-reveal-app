@@ -3,6 +3,9 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { PredictionProvider } from "@/components/prediction-context"
+import { NavbarBanner } from "@/components/navbar-banner"
+import { createClient } from "@/lib/supabase/server"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -51,17 +54,26 @@ export const viewport: Viewport = {
   userScalable: false,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const supabase = await createClient()
+  const { data: registries } = await supabase
+    .from("registries")
+    .select("*")
+    .order("created_at", { ascending: true })
+
   return (
     <html lang="en">
       <body className={`font-sans antialiased`}>
-        {children}
-        <Analytics />
-        <Toaster />
+        <PredictionProvider>
+          <NavbarBanner registries={registries || []} />
+          {children}
+          <Analytics />
+          <Toaster />
+        </PredictionProvider>
       </body>
     </html>
   )
